@@ -1,0 +1,13 @@
+<div class="app-cube"
+  (click)="clickOnCube($event)"
+  [ngStyle]="{
+    'height': height + 'px',
+    'width': width + 'px',
+    'background-color': backgroundColor
+  }"
+>
+
+  {{text}}
+  <!-- <ng-content></ng-content> -->
+  <app-test></app-test>
+</div>

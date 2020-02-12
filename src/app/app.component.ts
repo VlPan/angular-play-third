@@ -16,6 +16,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AppComponent {
 
+  m2Primitive = 'm2Primitive INIT';
+  m2Reference = {text: 'm2Reference INIT'};
+  m3Primitive = 'm3Primitive INIT';
+
   data: any;
   profileForm = this.fb.group({
     firstName: ['', [Validators.required, forbiddenNameValidator(/bob/)]],
@@ -37,14 +41,36 @@ export class AppComponent {
 
   public colors = ['#03fcbe', 'green', 'orange', 'blue']
 
+  templateCtx = {
+    $implicit:" Some strage inplecei name",
+    age: 102
+  }
+
   constructor(private ls: LoggerService, private componentFactoryResolver: ComponentFactoryResolver, private fb: FormBuilder,
    ) {
-
+    setTimeout(() => {
+      console.log('ROOT :: SET TIME OUT')
+      this.m2Primitive = 'updatedM2Primitive';
+      this.m2Reference.text = 'm2Reference UPDATED';
+    }, 5000)
   }
 
   onSubmit() {
     console.warn(this.profileForm.value);
   }
+
+  ngDoCheck(): void {
+    console.log('ROOT :: NgDoCheck', this.m2Primitive);
+  }
+
+  ngOnChanges(): void {
+    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    //Add '${implements OnChanges}' to the class.
+
+    console.log('ROOT :: OnChanges', this.m2Primitive);
+
+  }
+
 
   ngOnInit(): void {
 
@@ -96,12 +122,12 @@ export class AppComponent {
 
     // interval(500).subscribe(observer);
 
-    // let s: Subject<any> = new Subject();
-    // s.subscribe(observer);
-    // s.next(1);
-    // s.subscribe(observer);
-    // s.next(2);
-    // s.complete();
+    let s: Subject<any> = new Subject();
+    s.subscribe(observer);
+    s.next(1);
+    s.subscribe(observer);
+    s.next(2);
+    s.complete();
 
   }
 
@@ -111,10 +137,10 @@ export class AppComponent {
       age: 22
     })
 
-    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
-    // this.entry2.createComponent(componentFactory);
-    // this.entry2.createComponent(componentFactory);
-    // this.entry2.detach(1);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
+    this.entry2.createComponent(componentFactory);
+    this.entry2.createComponent(componentFactory);
+    this.entry2.detach(1);
   }
 
   public getEvent(event: any) {

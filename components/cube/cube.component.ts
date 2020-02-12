@@ -28,7 +28,7 @@ export class CubeComponent {
   @Output() public cubeClicked: EventEmitter<{$event: MouseEvent, name: keyof MyInterface}> = new EventEmitter();
 
   @HostListener('click', ['$event']) onCubeClickedListener ($event) {
-    console.log('CUBE CLICKED VIA LISTENER!!!', $event);
+    // console.log('CUBE CLICKED VIA LISTENER!!!', $event);
   }
 
   public clickOnCube(event) {
@@ -41,7 +41,7 @@ export class CubeComponent {
   }
 
   constructor(private appComponent: AppComponent) {
-    console.log('constructor');
+    // console.log('constructor');
   }
 
   // public ngOnInit() {

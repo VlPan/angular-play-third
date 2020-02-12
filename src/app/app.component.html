@@ -1,9 +1,30 @@
 
+<div>
+  ROOT PRIMITIVES
+<div>m2Primitive :: value = {{m2Primitive}}</div>
+<div>m2Reference :: value = {{m2Reference.text}}</div>
+</div>
+
+<div>
+  <div>M2</div>
+  <app-m2 primitive="{{m2Primitive}}" [reference]="m2Reference">
+    <app-m21></app-m21>
+  </app-m2>
+</div>
+
+<div>
+  <div>M3</div>
+  <app-m3></app-m3>
+</div>
+
 
 <button routerLink="/llModule">Go to LL module</button>
+<button routerLink="/m21">Go to M21 module</button>
 <div>=====================</div>
 <router-outlet></router-outlet>
 <div>=====================</div>
+
+<hr>
 
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <label>
@@ -86,7 +107,15 @@
   </ng-template>
 
   <div #entry2></div>
+
+
 </div>
+
+outlet:
+<div *ngTemplateOutlet="tmpl; context: templateCtx"></div>
+
+<hr>
+
 
 
 

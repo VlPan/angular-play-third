@@ -1,5 +1,5 @@
 import { AppComponent } from './../../src/app/app.component';
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, AfterViewInit, AfterViewChecked, AfterContentChecked, OnDestroy, DoCheck, SimpleChanges, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, AfterViewInit, AfterViewChecked, AfterContentChecked, OnDestroy, DoCheck, SimpleChanges, HostListener, ChangeDetectionStrategy, ChangeDetectorRef, NgZone } from '@angular/core';
 
 type myF = (b: any) => any;
 enum myEnum {
@@ -16,9 +16,10 @@ interface MyInterface {
 @Component({
   selector: 'app-cube',
   templateUrl: './cube.component.tml.html',
-  styleUrls: ['./cube.component.scss']
+  styleUrls: ['./cube.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CubeComponent {
+export class CubeComponent implements OnChanges {
 
   @Input() highlightColor: string = 'CUBE COLOR';
   @Input() public height = 100;
@@ -28,7 +29,7 @@ export class CubeComponent {
   @Output() public cubeClicked: EventEmitter<{$event: MouseEvent, name: keyof MyInterface}> = new EventEmitter();
 
   @HostListener('click', ['$event']) onCubeClickedListener ($event) {
-    // console.log('CUBE CLICKED VIA LISTENER!!!', $event);
+    console.log('CUBE CLICKED VIA LISTENER!!!', $event);
   }
 
   public clickOnCube(event) {
@@ -40,21 +41,40 @@ export class CubeComponent {
     this.cubeClicked.emit({$event: event, name: 'p2'});
   }
 
-  constructor(private appComponent: AppComponent) {
-    // console.log('constructor');
+  constructor(private appComponent: AppComponent, private cd: ChangeDetectorRef, private zone: NgZone) {
+    console.log('constructor');
+    this.zone.runOutsideAngular(() => {
+      setTimeout(() => {
+        console.log('SETTIMEOUT!!!');
+        this.text = 'NEW TEXT';
+        // this.cd.markForCheck();
+      }, 6000)
+    });
   }
 
-  // public ngOnInit() {
-  //   console.log('C:ngOnInit');
-  // }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(!changes.text.isFirstChange()) {
+      console.log('onChanges :: C :: NOT FIRST',changes);
+    } else {
+      console.log('onChanges :: C :: FIRST',changes);
+    }
+    
+    // this.text = 'NEW TEXT FROM CHANGES'
+    
+  }
+
+  public ngOnInit() {
+    console.log('C:Detach from ZONE');
+  }
 
   // public ngOnChanges(e: SimpleChanges) {
   //   console.log('C:ngOnChanges');
   // }
 
-  // public ngDoCheck() {
-  //   console.log('C:ngDoCheck');
-  // }
+  public ngDoCheck() {
+    
+    console.log('C:ngDoCheck', this.text);
+  }
 
   // public ngAfterContentChecked() {
   //   console.log('C:ngAfterContentChecked');
@@ -69,6 +89,7 @@ export class CubeComponent {
   // }
 
   // ngAfterViewChecked(): void {
+  //   console.log('text', this.text);
   //   console.log('C:ngAfterViewChecked');
   // }
 

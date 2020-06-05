@@ -1,4 +1,3 @@
-import { M21Component } from './../modules/m21/m21.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -12,19 +11,17 @@ import { TestCompDyn } from 'components/dynamic/test-component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { MyResolver } from 'src/modules/llModule/my-resolver';
-import { M2Module } from 'src/modules/m2/m2.module';
-import { M3Module } from 'src/modules/m3/m3.module';
+import { MyCustomDirective } from './myCustomDirective';
+import { MyCustomStrDirective } from './myCustomStructuralDirective';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { VTestComponent } from 'components/v-test/v-test.component';
 
 const routes: Routes = [{
   path: 'llModule',
   loadChildren: () => import('./../modules/llModule/llModule.module').then((M) => M.LlModuleModule),
   resolve: {message: MyResolver}
-},
-{
-  path: 'm21',
-  component: M21Component,
-}
-]
+  // canActivate / canLoad placesd
+}]
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,15 +30,17 @@ const routes: Routes = [{
     HighlightDirective,
     DelayDirective,
     ExponentPipe,
-    TestCompDyn
+    TestCompDyn,
+    MyCustomDirective,
+    MyCustomStrDirective,
+    VTestComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forRoot(routes),
-    M2Module,
-    M3Module
+    BrowserAnimationsModule
   ],
   providers: [ExponentPipe],
   bootstrap: [AppComponent],

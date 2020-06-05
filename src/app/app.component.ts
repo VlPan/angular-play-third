@@ -1,26 +1,55 @@
+import { CubeComponent } from './../../components/cube/cube.component';
 import { TestCompDyn } from './../../components/dynamic/test-component';
-import { TemplateRef, ViewChild, ViewContainerRef, ComponentFactoryResolver, DoCheck } from '@angular/core';
+import { TemplateRef, ViewChild, ViewContainerRef, ComponentFactoryResolver, DoCheck, ComponentRef, ChangeDetectorRef } from '@angular/core';
 import { Component } from '@angular/core';
 import { LoggerService } from 'services/logger.service';
-import { Observable, Observer, Subject, interval } from 'rxjs';
+import { Observable, Observer, Subject, interval, onErrorResumeNext } from 'rxjs';
 import { fromEvent, of } from 'rxjs';
 import { mergeMap, delay, switchMap, map } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { forbiddenNameValidator, fieldsNotTheSame, rangeValidator } from './forbiddenName';
 import { ActivatedRoute } from '@angular/router';
 
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  // ...
+} from '@angular/animations';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('openClose', [
+      // ...
+      state('open', style({
+        height: '200px',
+        opacity: 1,
+        backgroundColor: 'yellow'
+      })),
+      state('closed', style({
+        height: '100px',
+        opacity: 0.5,
+        backgroundColor: 'green'
+      })),
+      transition('open => closed', [
+        animate('1s')
+      ]),
+      transition('closed => open', [
+        animate('0.5s')
+      ]),
+    ]),
+  ]
 })
 export class AppComponent {
 
-  m2Primitive = 'm2Primitive INIT';
-  m2Reference = {text: 'm2Reference INIT'};
-  m3Primitive = 'm3Primitive INIT';
-
+  //FROMS
   data: any;
+  isOpen = true;
   profileForm = this.fb.group({
     firstName: ['', [Validators.required, forbiddenNameValidator(/bob/)]],
     lastName: ['', Validators.required],
@@ -31,46 +60,30 @@ export class AppComponent {
   }, {validators: [fieldsNotTheSame]})
   templateValue = '';
 
-
+  //View childs
   @ViewChild('tmpl', {static: true}) tmpl: TemplateRef<any>;
   @ViewChild('entry', {static: true, read: ViewContainerRef}) entry: ViewContainerRef;
   @ViewChild('entry2', {static: true, read: ViewContainerRef}) entry2: ViewContainerRef;
+  @ViewChild('cube', {static: false}) cube: ComponentRef<CubeComponent>;
 
   public cubeHeight = 100;
   public cubeWidth = 100;
 
   public colors = ['#03fcbe', 'green', 'orange', 'blue']
 
-  templateCtx = {
-    $implicit:" Some strage inplecei name",
-    age: 102
-  }
-
   constructor(private ls: LoggerService, private componentFactoryResolver: ComponentFactoryResolver, private fb: FormBuilder,
+    private cd: ChangeDetectorRef
    ) {
-    setTimeout(() => {
-      console.log('ROOT :: SET TIME OUT')
-      this.m2Primitive = 'updatedM2Primitive';
-      this.m2Reference.text = 'm2Reference UPDATED';
-    }, 5000)
+
   }
 
   onSubmit() {
     console.warn(this.profileForm.value);
   }
 
-  ngDoCheck(): void {
-    console.log('ROOT :: NgDoCheck', this.m2Primitive);
+  toggle() {
+    this.isOpen = !this.isOpen;
   }
-
-  ngOnChanges(): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
-
-    console.log('ROOT :: OnChanges', this.m2Primitive);
-
-  }
-
 
   ngOnInit(): void {
 
@@ -122,25 +135,30 @@ export class AppComponent {
 
     // interval(500).subscribe(observer);
 
-    let s: Subject<any> = new Subject();
-    s.subscribe(observer);
-    s.next(1);
-    s.subscribe(observer);
-    s.next(2);
-    s.complete();
+    // let s: Subject<any> = new Subject();
+    // s.subscribe(observer);
+    // s.next(1);
+    // s.subscribe(observer);
+    // s.next(2);
+    // s.complete();
 
   }
 
+  ngDoCheck(): void {
+    console.log('Docheck in Root');
+  }
+
   ngAfterViewInit(): void {
+    
     this.entry.createEmbeddedView(this.tmpl, {
       $implicit: 'Vlpan',
       age: 22
     })
 
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
-    this.entry2.createComponent(componentFactory);
-    this.entry2.createComponent(componentFactory);
-    this.entry2.detach(1);
+    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
+    // this.entry2.createComponent(componentFactory);
+    // this.entry2.createComponent(componentFactory);
+    // this.entry2.detach(1);
   }
 
   public getEvent(event: any) {
@@ -149,7 +167,26 @@ export class AppComponent {
   onHClicked(event) {
     console.log(event);
   }
-  public trackByColor(index, obj: any) {
+  public trackByColor(index, obj: undefined) {
     return obj;
   }
 }
+
+class User {
+  name = 'Bob'
+  age = 12
+}
+
+let u = new User();
+
+let get: <O, K extends keyof O>(obj: O, key: K) => O[K] = (arg, arg2)  => arg[arg2];
+let set: <O, K extends keyof O>(obj: O, key: K, value: O[K]) => void = (arg, arg2, arg3) => {
+  arg[arg2] = arg3;
+}
+
+
+set(u, "name", '1')
+console.log(get(u, "name"));
+console.log(get(u, "age"));
+
+

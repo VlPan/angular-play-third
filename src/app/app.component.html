@@ -1,30 +1,9 @@
 
-<div>
-  ROOT PRIMITIVES
-<div>m2Primitive :: value = {{m2Primitive}}</div>
-<div>m2Reference :: value = {{m2Reference.text}}</div>
-</div>
-
-<div>
-  <div>M2</div>
-  <app-m2 primitive="{{m2Primitive}}" [reference]="m2Reference">
-    <app-m21></app-m21>
-  </app-m2>
-</div>
-
-<div>
-  <div>M3</div>
-  <app-m3></app-m3>
-</div>
-
 
 <button routerLink="/llModule">Go to LL module</button>
-<button routerLink="/m21">Go to M21 module</button>
 <div>=====================</div>
 <router-outlet></router-outlet>
 <div>=====================</div>
-
-<hr>
 
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <label>
@@ -48,11 +27,17 @@
   <button type="submit" [disabled]="!profileForm.valid">Submit</button>
 </form>
 
-<p>
+<p [hidden]="false" [myD]="'blue'" 
+*myStrDir="{delay: 1000, color: 'yellow'}; let time = loadTime; let myImplicitMessage"
+
+
+>
+  {{time}}
+  {{myImplicitMessage}}
   Form Status: {{ profileForm.status }}
 </p>
 
-<div class="logger-area">
+<div class="logger-area" [class.myClass]="true" [style.border]="'1px solid red'">
   <div *ngFor="let log of ls.loggs; let i = index">
     {{i}}: {{log}}
   </div>
@@ -60,6 +45,10 @@
 <button (click)="ls.clearLogs()" [appHighlight]>Clear</button>
 <button (click)="cubeWidth = cubeWidth + 20" [appHighlight]="'orange'">+ width</button>
 <button (click)="cubeHeight = cubeHeight + 20">+ height</button>
+<button (click)="toggle()">Toggle</button>
+<div [@openClose]="isOpen ? 'open' : 'closed'" class="open-close-container">
+  <p>The box is now {{ isOpen ? 'Open' : 'Closed' }}!</p>
+</div>
 
 <ng-template #tmpl
   let-name
@@ -72,6 +61,7 @@
 <div class="container" #entry>
   <div *ngFor="let cube of colors; let i = index; let odd = odd; trackBy: trackByColor">
     <app-cube
+    #cube
     *appDelay="500 * i; let time = loadTime"
     [appHighlight]="'orange'"
     [textColor]="'blue'"
@@ -107,16 +97,11 @@
   </ng-template>
 
   <div #entry2></div>
-
-
 </div>
 
-outlet:
-<div *ngTemplateOutlet="tmpl; context: templateCtx"></div>
-
-<hr>
-
-
+<div>
+<app-test></app-test>
+</div>
 
 
 

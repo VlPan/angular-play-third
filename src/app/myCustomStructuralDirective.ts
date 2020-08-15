@@ -30,15 +30,8 @@ export class MyCustomStrDirective {
                     $implicit: "123"
                 }
             )
+            this.element.nativeElement.styles.backgroundColor = this.args.color;
         }, this.args.delay)
 
-
-        // setTimeout(() => {
-        //     this.viewContainerRef.createEmbeddedView(
-        //       this.templateRef,
-        //       new DelayContext(performance.now())
-        //       );
-        //   }, this.appDelay);
-        
     }
 }

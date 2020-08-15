@@ -155,10 +155,10 @@ export class AppComponent {
       age: 22
     })
 
-    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
-    // this.entry2.createComponent(componentFactory);
-    // this.entry2.createComponent(componentFactory);
-    // this.entry2.detach(1);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(TestCompDyn);
+    this.entry2.createComponent(componentFactory);
+    this.entry2.createComponent(componentFactory);
+    this.entry2.detach(1);
   }
 
   public getEvent(event: any) {
